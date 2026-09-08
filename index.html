@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coffee Water Stock Calculator</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 24px 16px;
+    background: #fafaf8;
+    color: #1a1a18;
+  }
+  h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+  p.sub { font-size: 13px; color: #666; margin-top: 0; margin-bottom: 24px; }
+  label { font-size: 13px; color: #555; display: block; margin-bottom: 4px; }
+  .row { display: flex; gap: 8px; margin-bottom: 16px; }
+  input[type=number], select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    background: white;
+  }
+  input[type=number] { flex: 1; }
+  select { width: 130px; }
+  .slider-block { margin-bottom: 16px; }
+  .slider-label { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 4px; }
+  input[type=range] { width: 100%; }
+  .results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 24px; }
+  .card { background: #f0efe9; border-radius: 8px; padding: 12px; text-align: center; }
+  .card p.label { font-size: 12px; color: #666; margin: 0 0 4px; }
+  .card p.value { font-size: 20px; font-weight: 600; margin: 0; }
+  .note { font-size: 12px; color: #888; margin-top: 20px; line-height: 1.5; }
+  hr { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+</style>
+</head>
+<body>
+
+<h1>Coffee water stock calculator</h1>
+<p class="sub">Dose magnesium sulfate, calcium chloride, and potassium bicarbonate stock solutions into brewing water.</p>
+
+<label for="vol">Water volume</label>
+<div class="row">
+  <input type="number" id="vol" value="1" min="0.1" step="0.1" />
+  <select id="unit">
+    <option value="3.78541">Gallons</option>
+    <option value="1">Liters</option>
+  </select>
+</div>
+
+<label for="caform">Calcium chloride form</label>
+<div class="row">
+  <select id="caform" style="width: 100%;">
+    <option value="0.3611">Anhydrous</option>
+    <option value="0.2726">Dihydrate</option>
+  </select>
+</div>
+
+<hr>
+
+<div class="slider-block">
+  <div class="slider-label"><label>Magnesium target</label><span id="mg-out">30 mg/L</span></div>
+  <input type="range" id="mg" min="0" max="60" value="30" step="1" />
+</div>
+<div class="slider-block">
+  <div class="slider-label"><label>Calcium target</label><span id="ca-out">20 mg/L</span></div>
+  <input type="range" id="ca" min="0" max="60" value="20" step="1" />
+</div>
+<div class="slider-block">
+  <div class="slider-label"><label>Alkalinity target (as CaCO3)</label><span id="alk-out">50 mg/L</span></div>
+  <input type="range" id="alk" min="0" max="100" value="50" step="1" />
+</div>
+
+<div class="results">
+  <div class="card">
+    <p class="label">Mg stock</p>
+    <p class="value" id="mg-ml">0 mL</p>
+  </div>
+  <div class="card">
+    <p class="label">Ca stock</p>
+    <p class="value" id="ca-ml">0 mL</p>
+  </div>
+  <div class="card">
+    <p class="label">Alk stock</p>
+    <p class="value" id="alk-ml">0 mL</p>
+  </div>
+</div>
+
+<p class="note">Assumes 100 mg/mL stock solutions (10g salt dissolved in 100mL distilled water) of magnesium sulfate heptahydrate, calcium chloride, and potassium bicarbonate. Mg stock = magnesium sulfate stock. Ca stock = calcium chloride stock. Alk stock = potassium bicarbonate stock.</p>
+
+<hr>
+
+<h2 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Making the stock solutions</h2>
+<p style="font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 12px;">Do this once per chemical (3 times total). Each batch makes a 100 mg/mL stock.</p>
+<ol style="font-size: 13px; color: #333; line-height: 1.7; padding-left: 20px; margin: 0;">
+  <li>Weigh <strong>10g</strong> of the powder on a gram-accurate scale.</li>
+  <li>Place it in a graduated container and add distilled water <strong>up to the 100mL mark</strong> (don't add 10g powder + 100mL water separately — the powder itself takes up some volume).</li>
+  <li>Stir or shake until fully dissolved.</li>
+  <li>Label the bottle (chemical name, "100mg/mL", date made).</li>
+  <li>Repeat for the other two chemicals in separate containers.</li>
+</ol>
+<p style="font-size: 13px; color: #555; line-height: 1.6; margin-top: 12px;">To dose: add the calculator's mL amounts either by volume (dosing syringe) or by weight — since these are dilute solutions, 1mL ≈ 1–1.05g on a scale, so weighing the stock directly onto your water is a close and often easier substitute for measuring volume.</p>
+
+<script>
+const $ = id => document.getElementById(id);
+const MG_FRAC = 24.305 / 246.47;
+const ALK_FRAC = 50.04 / 100.12;
+
+function update() {
+  const vol = parseFloat($('vol').value) || 0;
+  const unitL = parseFloat($('unit').value);
+  const volL = vol * unitL;
+  const caFrac = parseFloat($('caform').value);
+
+  const mgTarget = parseFloat($('mg').value);
+  const caTarget = parseFloat($('ca').value);
+  const alkTarget = parseFloat($('alk').value);
+
+  $('mg-out').textContent = mgTarget + ' mg/L';
+  $('ca-out').textContent = caTarget + ' mg/L';
+  $('alk-out').textContent = alkTarget + ' mg/L';
+
+  const mgSaltMg = (mgTarget * volL) / MG_FRAC;
+  const caSaltMg = (caTarget * volL) / caFrac;
+  const alkSaltMg = (alkTarget * volL) / ALK_FRAC;
+
+  $('mg-ml').textContent = (mgSaltMg / 100).toFixed(2) + ' mL';
+  $('ca-ml').textContent = (caSaltMg / 100).toFixed(2) + ' mL';
+  $('alk-ml').textContent = (alkSaltMg / 100).toFixed(2) + ' mL';
+}
+
+['vol','unit','caform','mg','ca','alk'].forEach(id => {
+  $(id).addEventListener('input', update);
+});
+update();
+</script>
+
+</body>
+</html>
