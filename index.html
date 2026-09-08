@@ -70,6 +70,25 @@
 
 <hr>
 
+<p style="font-size: 13px; font-weight: 600; margin-bottom: 4px;">Stock concentrations (mg per gram of solution)</p>
+<p style="font-size: 12px; color: #666; margin-top: 0; margin-bottom: 10px;">Default 100 mg/g assumes a clean 10g-in-100mL batch. If you weighed your actual solute and water, enter solute mass &divide; total solution mass &times; 1000 here instead for more accurate dosing.</p>
+<div class="row">
+  <div style="flex: 1;">
+    <label for="mgconc" style="font-size: 12px;">Magnesium stock</label>
+    <input type="number" id="mgconc" value="100" min="1" step="0.1" style="width: 100%;" />
+  </div>
+  <div style="flex: 1;">
+    <label for="caconc" style="font-size: 12px;">Calcium stock</label>
+    <input type="number" id="caconc" value="100" min="1" step="0.1" style="width: 100%;" />
+  </div>
+  <div style="flex: 1;">
+    <label for="alkconc" style="font-size: 12px;">Alkalinity stock</label>
+    <input type="number" id="alkconc" value="100" min="1" step="0.1" style="width: 100%;" />
+  </div>
+</div>
+
+<hr>
+
 <div class="slider-block">
   <div class="slider-label"><label>Magnesium target</label><span id="mg-out">30 mg/L</span></div>
   <input type="range" id="mg" min="0" max="60" value="30" step="1" />
@@ -86,33 +105,35 @@
 <div class="results">
   <div class="card">
     <p class="label">Mg stock</p>
-    <p class="value" id="mg-ml">0 mL</p>
+    <p class="value" id="mg-ml">0 g</p>
   </div>
   <div class="card">
     <p class="label">Ca stock</p>
-    <p class="value" id="ca-ml">0 mL</p>
+    <p class="value" id="ca-ml">0 g</p>
   </div>
   <div class="card">
     <p class="label" id="alk-label">Alk stock</p>
-    <p class="value" id="alk-ml">0 mL</p>
+    <p class="value" id="alk-ml">0 g</p>
   </div>
 </div>
 
-<p class="note">Assumes 100 mg/mL stock solutions (10g salt dissolved in 100mL distilled water) of magnesium sulfate heptahydrate, calcium chloride, and your chosen alkalinity source (potassium bicarbonate or baking soda). Mg stock = magnesium sulfate stock. Ca stock = calcium chloride stock. Alk stock = potassium bicarbonate or baking soda stock, depending on selection above.</p>
+<p class="note">Dosing is calculated from the stock concentrations entered above (mg of dissolved chemical per gram of solution), so results are given in grams of stock solution to weigh out — no volume/density assumptions. Mg stock = magnesium sulfate stock. Ca stock = calcium chloride stock. Alk stock = your selected alkalinity source stock (baking soda or potassium bicarbonate).</p>
 
 <hr>
 
 <h2 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Making the stock solutions</h2>
-<p style="font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 12px;">Do this once per chemical (3 total: magnesium sulfate, calcium chloride, and your alkalinity source — baking soda by default, or potassium bicarbonate if you select that instead). Each batch makes a 100 mg/mL stock.</p>
+<p style="font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 12px;">Do this once per chemical (3 total: magnesium sulfate, calcium chloride, and your alkalinity source — baking soda by default, or potassium bicarbonate if you select that instead).</p>
 <ol style="font-size: 13px; color: #333; line-height: 1.7; padding-left: 20px; margin: 0;">
-  <li>Weigh <strong>10g</strong> of the powder on a gram-accurate scale.</li>
-  <li>Place it in a graduated container and add distilled water <strong>up to the 100mL mark</strong> (don't add 10g powder + 100mL water separately — the powder itself takes up some volume).</li>
+  <li>Tare your scale, weigh the powder, and record the <strong>exact</strong> figure (e.g. 10.02g — don't round to 10).</li>
+  <li>Add distilled water and record the <strong>exact</strong> water weight added (e.g. 91.85g) — no need to hit a round total.</li>
   <li>Stir or shake until fully dissolved.</li>
-  <li>Label the bottle (chemical name, "100mg/mL", date made).</li>
+  <li>Calculate your true concentration: solute mass &divide; (solute mass + water mass) &times; 1000 = mg per gram of solution. Example: 10.02 &divide; 101.87 &times; 1000 = 98.4 mg/g.</li>
+  <li>Enter that number into the matching "Stock concentrations" field above instead of leaving it at the default 100.</li>
+  <li>Label the bottle (chemical name, measured mg/g, date made).</li>
   <li>Repeat for the other two chemicals in separate containers.</li>
 </ol>
-<p style="font-size: 13px; color: #555; line-height: 1.6; margin-top: 12px;">Baking soda dissolves the same way as the others — no special handling needed. It's plain sodium bicarbonate, the same box you'd use for baking, so ordinary kitchen-grade is fine here (no need to buy a "food grade" labeled version separately).</p>
-<p style="font-size: 13px; color: #555; line-height: 1.6; margin-top: 12px;">To dose: add the calculator's mL amounts either by volume (dosing syringe) or by weight — since these are dilute solutions, 1mL ≈ 1–1.05g on a scale, so weighing the stock directly onto your water is a close and often easier substitute for measuring volume.</p>
+<p style="font-size: 13px; color: #555; line-height: 1.6; margin-top: 12px;">This weight-native method avoids the volume/density approximation entirely — every number is a direct scale reading, so it's more accurate than assuming a clean 100mg/mL from a graduated container.</p>
+<p style="font-size: 13px; color: #555; line-height: 1.6; margin-top: 12px;">To dose: weigh out the calculator's gram amounts directly onto your brew water on the same scale.</p>
 
 <script>
 const $ = id => document.getElementById(id);
@@ -124,6 +145,10 @@ function update() {
   const volL = vol * unitL;
   const caFrac = parseFloat($('caform').value);
   const alkFrac = parseFloat($('alkform').value);
+
+  const mgConc = parseFloat($('mgconc').value) || 100;
+  const caConc = parseFloat($('caconc').value) || 100;
+  const alkConc = parseFloat($('alkconc').value) || 100;
 
   const mgTarget = parseFloat($('mg').value);
   const caTarget = parseFloat($('ca').value);
@@ -137,12 +162,12 @@ function update() {
   const caSaltMg = (caTarget * volL) / caFrac;
   const alkSaltMg = (alkTarget * volL) / alkFrac;
 
-  $('mg-ml').textContent = (mgSaltMg / 100).toFixed(2) + ' mL';
-  $('ca-ml').textContent = (caSaltMg / 100).toFixed(2) + ' mL';
-  $('alk-ml').textContent = (alkSaltMg / 100).toFixed(2) + ' mL';
+  $('mg-ml').textContent = (mgSaltMg / mgConc).toFixed(2) + ' g';
+  $('ca-ml').textContent = (caSaltMg / caConc).toFixed(2) + ' g';
+  $('alk-ml').textContent = (alkSaltMg / alkConc).toFixed(2) + ' g';
 }
 
-['vol','unit','caform','alkform','mg','ca','alk'].forEach(id => {
+['vol','unit','caform','alkform','mgconc','caconc','alkconc','mg','ca','alk'].forEach(id => {
   $(id).addEventListener('input', update);
 });
 
