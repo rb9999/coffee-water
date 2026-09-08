@@ -135,6 +135,33 @@
 <p style="font-size: 13px; color: #555; line-height: 1.6; margin-top: 12px;">This weight-native method avoids the volume/density approximation entirely — every number is a direct scale reading, so it's more accurate than assuming a clean 100mg/mL from a graduated container.</p>
 <p style="font-size: 13px; color: #555; line-height: 1.6; margin-top: 12px;">To dose: weigh out the calculator's gram amounts directly onto your brew water on the same scale.</p>
 
+<hr>
+
+<h2 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Stock concentration helper</h2>
+<p style="font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 12px;">Enter your powder weight and the running total after adding water (don't re-tare between the two). This calculates mg/g for you.</p>
+
+<div class="row">
+  <div style="flex: 1;">
+    <label for="helper-powder" style="font-size: 12px;">Powder weight (g)</label>
+    <input type="number" id="helper-powder" step="0.01" min="0" style="width: 100%;" />
+  </div>
+  <div style="flex: 1;">
+    <label for="helper-total" style="font-size: 12px;">Total after water (g)</label>
+    <input type="number" id="helper-total" step="0.01" min="0" style="width: 100%;" />
+  </div>
+</div>
+
+<div style="background: #f0efe9; border-radius: 8px; padding: 12px; text-align: center; margin-bottom: 12px;">
+  <p style="font-size: 12px; color: #666; margin: 0 0 4px;">Concentration</p>
+  <p style="font-size: 20px; font-weight: 600; margin: 0;" id="helper-result">— mg/g</p>
+</div>
+
+<div class="row" style="flex-wrap: wrap; gap: 8px;">
+  <button type="button" id="apply-mg" style="flex: 1; min-width: 100px; padding: 8px; border-radius: 6px; border: 1px solid #6b4f3b; background: white; color: #6b4f3b; font-size: 12px;">Apply to Magnesium</button>
+  <button type="button" id="apply-ca" style="flex: 1; min-width: 100px; padding: 8px; border-radius: 6px; border: 1px solid #6b4f3b; background: white; color: #6b4f3b; font-size: 12px;">Apply to Calcium</button>
+  <button type="button" id="apply-alk" style="flex: 1; min-width: 100px; padding: 8px; border-radius: 6px; border: 1px solid #6b4f3b; background: white; color: #6b4f3b; font-size: 12px;">Apply to Alkalinity</button>
+</div>
+
 <script>
 const $ = id => document.getElementById(id);
 const MG_FRAC = 24.305 / 246.47;
@@ -181,6 +208,35 @@ const params = new URLSearchParams(window.location.search);
 });
 
 update();
+
+// Stock concentration helper
+function computeHelper() {
+  const powder = parseFloat($('helper-powder').value);
+  const total = parseFloat($('helper-total').value);
+  if (!powder || !total || total <= powder) {
+    $('helper-result').textContent = '— mg/g';
+    return null;
+  }
+  const conc = (powder / total) * 1000;
+  $('helper-result').textContent = conc.toFixed(1) + ' mg/g';
+  return conc;
+}
+
+$('helper-powder').addEventListener('input', computeHelper);
+$('helper-total').addEventListener('input', computeHelper);
+
+$('apply-mg').addEventListener('click', () => {
+  const conc = computeHelper();
+  if (conc) { $('mgconc').value = conc.toFixed(1); update(); }
+});
+$('apply-ca').addEventListener('click', () => {
+  const conc = computeHelper();
+  if (conc) { $('caconc').value = conc.toFixed(1); update(); }
+});
+$('apply-alk').addEventListener('click', () => {
+  const conc = computeHelper();
+  if (conc) { $('alkconc').value = conc.toFixed(1); update(); }
+});
 </script>
 
 </body>
