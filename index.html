@@ -136,6 +136,16 @@ function update() {
 ['vol','unit','caform','mg','ca','alk'].forEach(id => {
   $(id).addEventListener('input', update);
 });
+
+// Preset targets from URL query params (e.g. index.html?mg=35&ca=15&alk=30)
+const params = new URLSearchParams(window.location.search);
+['mg','ca','alk'].forEach(key => {
+  if (params.has(key)) {
+    const val = parseFloat(params.get(key));
+    if (!isNaN(val)) $(key).value = val;
+  }
+});
+
 update();
 </script>
 
