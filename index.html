@@ -60,6 +60,14 @@
   </select>
 </div>
 
+<label for="alkform">Alkalinity source</label>
+<div class="row">
+  <select id="alkform" style="width: 100%;">
+    <option value="0.4999">Potassium bicarbonate</option>
+    <option value="0.5957">Baking soda (sodium bicarbonate)</option>
+  </select>
+</div>
+
 <hr>
 
 <div class="slider-block">
@@ -85,12 +93,12 @@
     <p class="value" id="ca-ml">0 mL</p>
   </div>
   <div class="card">
-    <p class="label">Alk stock</p>
+    <p class="label" id="alk-label">Alk stock</p>
     <p class="value" id="alk-ml">0 mL</p>
   </div>
 </div>
 
-<p class="note">Assumes 100 mg/mL stock solutions (10g salt dissolved in 100mL distilled water) of magnesium sulfate heptahydrate, calcium chloride, and potassium bicarbonate. Mg stock = magnesium sulfate stock. Ca stock = calcium chloride stock. Alk stock = potassium bicarbonate stock.</p>
+<p class="note">Assumes 100 mg/mL stock solutions (10g salt dissolved in 100mL distilled water) of magnesium sulfate heptahydrate, calcium chloride, and your chosen alkalinity source (potassium bicarbonate or baking soda). Mg stock = magnesium sulfate stock. Ca stock = calcium chloride stock. Alk stock = potassium bicarbonate or baking soda stock, depending on selection above.</p>
 
 <hr>
 
@@ -108,13 +116,13 @@
 <script>
 const $ = id => document.getElementById(id);
 const MG_FRAC = 24.305 / 246.47;
-const ALK_FRAC = 50.04 / 100.12;
 
 function update() {
   const vol = parseFloat($('vol').value) || 0;
   const unitL = parseFloat($('unit').value);
   const volL = vol * unitL;
   const caFrac = parseFloat($('caform').value);
+  const alkFrac = parseFloat($('alkform').value);
 
   const mgTarget = parseFloat($('mg').value);
   const caTarget = parseFloat($('ca').value);
@@ -126,14 +134,14 @@ function update() {
 
   const mgSaltMg = (mgTarget * volL) / MG_FRAC;
   const caSaltMg = (caTarget * volL) / caFrac;
-  const alkSaltMg = (alkTarget * volL) / ALK_FRAC;
+  const alkSaltMg = (alkTarget * volL) / alkFrac;
 
   $('mg-ml').textContent = (mgSaltMg / 100).toFixed(2) + ' mL';
   $('ca-ml').textContent = (caSaltMg / 100).toFixed(2) + ' mL';
   $('alk-ml').textContent = (alkSaltMg / 100).toFixed(2) + ' mL';
 }
 
-['vol','unit','caform','mg','ca','alk'].forEach(id => {
+['vol','unit','caform','alkform','mg','ca','alk'].forEach(id => {
   $(id).addEventListener('input', update);
 });
 
