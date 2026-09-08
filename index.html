@@ -198,6 +198,16 @@ function update() {
   $(id).addEventListener('input', update);
 });
 
+// Persist stock concentrations across visits (this page only, stored in your browser)
+const CONC_IDS = ['mgconc','caconc','alkconc'];
+CONC_IDS.forEach(id => {
+  const saved = localStorage.getItem('coffeewater_' + id);
+  if (saved !== null) $(id).value = saved;
+  $(id).addEventListener('input', () => {
+    localStorage.setItem('coffeewater_' + id, $(id).value);
+  });
+});
+
 // Preset targets from URL query params (e.g. index.html?mg=35&ca=15&alk=30)
 const params = new URLSearchParams(window.location.search);
 ['mg','ca','alk'].forEach(key => {
@@ -227,15 +237,15 @@ $('helper-total').addEventListener('input', computeHelper);
 
 $('apply-mg').addEventListener('click', () => {
   const conc = computeHelper();
-  if (conc) { $('mgconc').value = conc.toFixed(1); update(); }
+  if (conc) { $('mgconc').value = conc.toFixed(1); localStorage.setItem('coffeewater_mgconc', $('mgconc').value); update(); }
 });
 $('apply-ca').addEventListener('click', () => {
   const conc = computeHelper();
-  if (conc) { $('caconc').value = conc.toFixed(1); update(); }
+  if (conc) { $('caconc').value = conc.toFixed(1); localStorage.setItem('coffeewater_caconc', $('caconc').value); update(); }
 });
 $('apply-alk').addEventListener('click', () => {
   const conc = computeHelper();
-  if (conc) { $('alkconc').value = conc.toFixed(1); update(); }
+  if (conc) { $('alkconc').value = conc.toFixed(1); localStorage.setItem('coffeewater_alkconc', $('alkconc').value); update(); }
 });
 </script>
 
