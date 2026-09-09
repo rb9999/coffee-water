@@ -122,22 +122,6 @@
 
 <hr>
 
-<h2 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Making the stock solutions</h2>
-<p style="font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 12px;">Do this once per chemical (3 total: magnesium sulfate, calcium chloride, and your alkalinity source — baking soda by default, or potassium bicarbonate if you select that instead).</p>
-<ol style="font-size: 13px; color: #333; line-height: 1.7; padding-left: 20px; margin: 0;">
-  <li>Tare your scale, weigh the powder, and record the <strong>exact</strong> figure (e.g. 10.02g — don't round to 10).</li>
-  <li>Add distilled water and record the <strong>exact</strong> water weight added (e.g. 91.85g) — no need to hit a round total.</li>
-  <li>Stir or shake until fully dissolved.</li>
-  <li>Calculate your true concentration: solute mass &divide; (solute mass + water mass) &times; 1000 = mg per gram of solution. Example: 10.02 &divide; 101.87 &times; 1000 = 98.4 mg/g.</li>
-  <li>Enter that number into the matching "Stock concentrations" field above instead of leaving it at the default 100.</li>
-  <li>Label the bottle (chemical name, measured mg/g, date made).</li>
-  <li>Repeat for the other two chemicals in separate containers.</li>
-</ol>
-<p style="font-size: 13px; color: #555; line-height: 1.6; margin-top: 12px;">This weight-native method avoids the volume/density approximation entirely — every number is a direct scale reading, so it's more accurate than assuming a clean 100mg/mL from a graduated container.</p>
-<p style="font-size: 13px; color: #555; line-height: 1.6; margin-top: 12px;">To dose: weigh out the calculator's gram amounts directly onto your brew water on the same scale.</p>
-
-<hr>
-
 <h2 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Stock concentration helper</h2>
 <p style="font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 12px;">Enter your powder weight and the running total after adding water (don't re-tare between the two). This calculates mg/g for you.</p>
 
@@ -162,6 +146,22 @@
   <button type="button" id="apply-ca" style="flex: 1; min-width: 100px; padding: 8px; border-radius: 6px; border: 1px solid #6b4f3b; background: white; color: #6b4f3b; font-size: 12px;">Apply to Calcium</button>
   <button type="button" id="apply-alk" style="flex: 1; min-width: 100px; padding: 8px; border-radius: 6px; border: 1px solid #6b4f3b; background: white; color: #6b4f3b; font-size: 12px;">Apply to Alkalinity</button>
 </div>
+
+<hr>
+
+<h2 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Making the stock solutions</h2>
+<p style="font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 12px;">Do this once per chemical (3 total: magnesium sulfate, calcium chloride, and your alkalinity source — baking soda by default, or potassium bicarbonate if you select that instead).</p>
+<ol style="font-size: 13px; color: #333; line-height: 1.7; padding-left: 20px; margin: 0;">
+  <li>Tare your scale, weigh the powder, and record the <strong>exact</strong> figure (e.g. 10.02g — don't round to 10).</li>
+  <li>Add distilled water and record the <strong>exact</strong> water weight added (e.g. 91.85g) — no need to hit a round total.</li>
+  <li>Stir or shake until fully dissolved.</li>
+  <li>Calculate your true concentration: solute mass &divide; (solute mass + water mass) &times; 1000 = mg per gram of solution. Example: 10.02 &divide; 101.87 &times; 1000 = 98.4 mg/g.</li>
+  <li>Enter that number into the matching "Stock concentrations" field above instead of leaving it at the default 100.</li>
+  <li>Label the bottle (chemical name, measured mg/g, date made).</li>
+  <li>Repeat for the other two chemicals in separate containers.</li>
+</ol>
+<p style="font-size: 13px; color: #555; line-height: 1.6; margin-top: 12px;">This weight-native method avoids the volume/density approximation entirely — every number is a direct scale reading, so it's more accurate than assuming a clean 100mg/mL from a graduated container.</p>
+<p style="font-size: 13px; color: #555; line-height: 1.6; margin-top: 12px;">To dose: weigh out the calculator's gram amounts directly onto your brew water on the same scale.</p>
 
 <script>
 const $ = id => document.getElementById(id);
