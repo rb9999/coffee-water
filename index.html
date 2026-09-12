@@ -105,15 +105,15 @@
 
 <div class="results">
   <div class="card">
-    <p class="label">Mg stock</p>
+    <p class="label">Mg stock<br>(Epsom salt)</p>
     <p class="value" id="mg-ml">0 g</p>
   </div>
   <div class="card">
-    <p class="label">Ca stock</p>
+    <p class="label">Ca stock<br>(Calcium chloride)</p>
     <p class="value" id="ca-ml">0 g</p>
   </div>
   <div class="card">
-    <p class="label" id="alk-label">Alk stock</p>
+    <p class="label" id="alk-label">Alk stock<br>(Baking soda)</p>
     <p class="value" id="alk-ml">0 g</p>
   </div>
 </div>
@@ -185,6 +185,9 @@ function update() {
   $('mg-out').textContent = mgTarget + ' mg/L';
   $('ca-out').textContent = caTarget + ' mg/L';
   $('alk-out').textContent = alkTarget + ' mg/L';
+
+  const alkName = $('alkform').options[$('alkform').selectedIndex].text;
+  $('alk-label').innerHTML = 'Alk stock<br>(' + alkName + ')';
 
   const mgSaltMg = (mgTarget * volL) / MG_FRAC;
   const caSaltMg = (caTarget * volL) / caFrac;
