@@ -48,8 +48,8 @@
   <input type="number" id="vol" value="1" min="0.1" step="0.1" />
   <select id="unit">
     <option value="3.78541">Gallons</option>
-    <option value="1" selected>Liters</option>
-    <option value="0.001">Grams</option>
+    <option value="1">Liters</option>
+    <option value="0.001" selected>Grams</option>
   </select>
 </div>
 <p style="font-size: 12px; color: #888; margin-top: -10px; margin-bottom: 16px; line-height: 1.5;">Start with this much distilled/RO water, then add the stock amounts below directly to it. Don't top off to this volume afterward — the small amount of stock added on top is negligible and already accounted for.</p>
@@ -125,7 +125,7 @@
 
 <h2 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Roast level</h2>
 <p style="font-size: 12px; color: #666; margin-top: 0; margin-bottom: 10px;">Drag to jump to a recommended recipe, or watch it track where your current sliders fall.</p>
-<input type="range" id="roast" min="0" max="3" step="1" value="1" style="width: 100%;" />
+<input type="range" id="roast" min="0" max="3" step="0.01" value="1" style="width: 100%;" />
 <div style="display: flex; justify-content: space-between; font-size: 11px; color: #888; margin-top: 4px; margin-bottom: 20px;">
   <span>Light</span>
   <span>Medium</span>
@@ -222,16 +222,32 @@ const ROAST_PRESETS = [
   { mg: 20, ca: 25, alk: 65 },  // Dark
   { mg: 15, ca: 32, alk: 85 },  // Extra dark
 ];
+let suppressRoastSync = false;
 
 function applyRoastPreset(index) {
   const p = ROAST_PRESETS[index];
+  suppressRoastSync = true;
   $('mg').value = p.mg;
   $('ca').value = p.ca;
   $('alk').value = p.alk;
   update();
+  suppressRoastSync = false;
+}
+
+function interpolateRoast(pos) {
+  const idx0 = Math.floor(pos);
+  const idx1 = Math.min(idx0 + 1, ROAST_PRESETS.length - 1);
+  const frac = pos - idx0;
+  const p0 = ROAST_PRESETS[idx0], p1 = ROAST_PRESETS[idx1];
+  return {
+    mg: p0.mg + (p1.mg - p0.mg) * frac,
+    ca: p0.ca + (p1.ca - p0.ca) * frac,
+    alk: p0.alk + (p1.alk - p0.alk) * frac,
+  };
 }
 
 function syncRoastSliderFromTargets() {
+  if (suppressRoastSync) return;
   const mg = parseFloat($('mg').value);
   const ca = parseFloat($('ca').value);
   const alk = parseFloat($('alk').value);
@@ -243,8 +259,23 @@ function syncRoastSliderFromTargets() {
   $('roast').value = bestIdx;
 }
 
+// While dragging: smooth interpolation between adjacent presets, no hard jumps
 $('roast').addEventListener('input', () => {
-  applyRoastPreset(parseInt($('roast').value, 10));
+  const pos = parseFloat($('roast').value);
+  const vals = interpolateRoast(pos);
+  suppressRoastSync = true;
+  $('mg').value = Math.round(vals.mg);
+  $('ca').value = Math.round(vals.ca);
+  $('alk').value = Math.round(vals.alk);
+  update();
+  suppressRoastSync = false;
+});
+
+// On release: soft-snap to the nearest whole preset
+$('roast').addEventListener('change', () => {
+  const idx = Math.round(parseFloat($('roast').value));
+  $('roast').value = idx;
+  applyRoastPreset(idx);
 });
 
 ['mg','ca','alk'].forEach(id => {
