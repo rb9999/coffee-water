@@ -295,17 +295,33 @@ VOL_IDS.forEach(id => {
   });
 });
 
-// Preset targets from URL query params (e.g. index.html?mg=35&ca=15&alk=30)
+// Persist roast level slider across visits
+const savedRoast = localStorage.getItem('coffeewater_roast');
+if (savedRoast !== null) {
+  $('roast').value = savedRoast;
+  const vals = interpolateRoast(parseFloat(savedRoast));
+  $('mg').value = Math.round(vals.mg);
+  $('ca').value = Math.round(vals.ca);
+  $('alk').value = Math.round(vals.alk);
+}
+$('roast').addEventListener('input', () => {
+  localStorage.setItem('coffeewater_roast', $('roast').value);
+});
+
+// Preset targets from URL query params (e.g. index.html?mg=35&ca=15&alk=30) — takes priority over saved roast
 const params = new URLSearchParams(window.location.search);
+let paramsApplied = false;
 ['mg','ca','alk'].forEach(key => {
   if (params.has(key)) {
     const val = parseFloat(params.get(key));
-    if (!isNaN(val)) $(key).value = val;
+    if (!isNaN(val)) { $(key).value = val; paramsApplied = true; }
   }
 });
 
 update();
-syncRoastSliderFromTargets();
+if (paramsApplied || savedRoast === null) {
+  syncRoastSliderFromTargets();
+}
 function computeHelper() {
   const powder = parseFloat($('helper-powder').value);
   const total = parseFloat($('helper-total').value);
