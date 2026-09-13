@@ -123,6 +123,18 @@
 
 <hr>
 
+<h2 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Roast level</h2>
+<p style="font-size: 12px; color: #666; margin-top: 0; margin-bottom: 10px;">Drag to jump to a recommended recipe, or watch it track where your current sliders fall.</p>
+<input type="range" id="roast" min="0" max="3" step="1" value="1" style="width: 100%;" />
+<div style="display: flex; justify-content: space-between; font-size: 11px; color: #888; margin-top: 4px; margin-bottom: 20px;">
+  <span>Light</span>
+  <span>Medium</span>
+  <span>Dark</span>
+  <span>Extra dark</span>
+</div>
+
+<hr>
+
 <h2 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Stock concentration helper</h2>
 <p style="font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 12px;">Enter your powder weight and the running total after adding water (don't re-tare between the two). This calculates mg/g for you.</p>
 
@@ -203,6 +215,42 @@ function update() {
   $(id).addEventListener('input', update);
 });
 
+// Roast level slider: presets use the minimum of each recommended range
+const ROAST_PRESETS = [
+  { mg: 35, ca: 15, alk: 30 },  // Light
+  { mg: 30, ca: 20, alk: 50 },  // Medium
+  { mg: 20, ca: 25, alk: 65 },  // Dark
+  { mg: 15, ca: 32, alk: 85 },  // Extra dark
+];
+
+function applyRoastPreset(index) {
+  const p = ROAST_PRESETS[index];
+  $('mg').value = p.mg;
+  $('ca').value = p.ca;
+  $('alk').value = p.alk;
+  update();
+}
+
+function syncRoastSliderFromTargets() {
+  const mg = parseFloat($('mg').value);
+  const ca = parseFloat($('ca').value);
+  const alk = parseFloat($('alk').value);
+  let bestIdx = 0, bestDist = Infinity;
+  ROAST_PRESETS.forEach((p, i) => {
+    const d = Math.pow((mg - p.mg) / 60, 2) + Math.pow((ca - p.ca) / 60, 2) + Math.pow((alk - p.alk) / 100, 2);
+    if (d < bestDist) { bestDist = d; bestIdx = i; }
+  });
+  $('roast').value = bestIdx;
+}
+
+$('roast').addEventListener('input', () => {
+  applyRoastPreset(parseInt($('roast').value, 10));
+});
+
+['mg','ca','alk'].forEach(id => {
+  $(id).addEventListener('input', syncRoastSliderFromTargets);
+});
+
 // Persist stock concentrations across visits (this page only, stored in your browser)
 const CONC_IDS = ['mgconc','caconc','alkconc'];
 CONC_IDS.forEach(id => {
@@ -223,8 +271,7 @@ const params = new URLSearchParams(window.location.search);
 });
 
 update();
-
-// Stock concentration helper
+syncRoastSliderFromTargets();
 function computeHelper() {
   const powder = parseFloat($('helper-powder').value);
   const total = parseFloat($('helper-total').value);
