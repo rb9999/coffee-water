@@ -1,6 +1,6 @@
 # Coffee Water Stock Calculator
 
-A simple tool for mineralizing distilled/RO water for pour-over and drip coffee, using cheap food-grade chemicals instead of pre-made packets (like Third Wave Water).
+A simple tool for mineralizing distilled/RO water for pour-over and drip coffee, using cheap food-grade chemicals instead of pre-made packets.
 
 **Live pages:**
 - Calculator: https://rb9999.github.io/coffee-water/
