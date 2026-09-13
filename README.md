@@ -14,7 +14,7 @@ Coffee water quality (magnesium, calcium, and alkalinity levels) has a big effec
 
 - **Distilled or RO water** — your base water, has no minerals of its own
 - **Magnesium sulfate (Epsom salt)** — USP/food grade
-- **Calcium chloride** — food grade, anhydrous form
+- **Calcium chloride** — food grade, anhydrous or dihydrate form, check the label
 - **An alkalinity source** — plain baking soda (sodium bicarbonate) or potassium bicarbonate, either works
 - **A gram-accurate scale** (0.01g resolution ideal)
 - 3 small bottles for storing your stock solutions (amber glass recommended, keeps light out)
