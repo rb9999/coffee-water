@@ -31,7 +31,8 @@ Do this once per chemical (3 total). Each stock is roughly a 10% solution (10g p
 5. Label the bottle with the chemical, the mg/g value, and the date
 6. Repeat for the other two chemicals in separate bottles
 
-The calculator's **Stock concentration helper** (bottom of the page) will do this math for you — just enter your two weights and click "Apply" to drop the result straight into the right field.
+The calculator's **Stock concentration helper** (bottom of the page) will do this math for you — just enter your two weights and click "Apply" to drop the result straight into the right field. You can use this to make
+whatever concentration of chemical you want as well. Doesn't have to be 10%.
 
 ## Step 2: Use the calculator
 
