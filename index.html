@@ -285,6 +285,16 @@ CONC_IDS.forEach(id => {
   });
 });
 
+// Persist water volume and unit across visits
+const VOL_IDS = ['vol','unit'];
+VOL_IDS.forEach(id => {
+  const saved = localStorage.getItem('coffeewater_' + id);
+  if (saved !== null) $(id).value = saved;
+  $(id).addEventListener('input', () => {
+    localStorage.setItem('coffeewater_' + id, $(id).value);
+  });
+});
+
 // Preset targets from URL query params (e.g. index.html?mg=35&ca=15&alk=30)
 const params = new URLSearchParams(window.location.search);
 ['mg','ca','alk'].forEach(key => {
