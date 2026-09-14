@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community Recipes — Coffee Water</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 24px 16px;
+    background: #fafaf8;
+    color: #1a1a18;
+  }
+  h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+  p.sub { font-size: 13px; color: #666; margin-top: 0; margin-bottom: 24px; }
+  a.back { display: inline-block; font-size: 13px; color: #6b4f3b; margin-bottom: 20px; text-decoration: none; }
+  a.back:hover { text-decoration: underline; }
+  .recipe-card {
+    background: #f0efe9;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .recipe-card h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+  .recipe-card p.desc {
+    font-size: 13px;
+    color: #666;
+    margin: 0 0 12px;
+  }
+  .targets {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .target {
+    background: white;
+    border-radius: 8px;
+    padding: 8px;
+    text-align: center;
+  }
+  .target p.label { font-size: 11px; color: #888; margin: 0 0 2px; }
+  .target p.value { font-size: 15px; font-weight: 600; margin: 0; }
+  .use-btn {
+    display: inline-block;
+    background: #6b4f3b;
+    color: white;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    margin-top: 4px;
+  }
+  .use-btn:hover { background: #5a4230; }
+  hr { border: none; border-top: 1px solid #ddd; margin: 24px 0; }
+  .note {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.6;
+    background: #eef2ee;
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .note a { color: #6b4f3b; }
+</style>
+</head>
+<body>
+
+<a class="back" href="index.html">&larr; Back to calculator</a>
+
+<h1>Community recipes</h1>
+<p class="sub">Well-known published water recipes, converted to targets you can plug into the calculator. These all use zero calcium — hardness comes entirely from magnesium.</p>
+
+<div class="recipe-card">
+  <h2>Melbourne</h2>
+  <a class="use-btn" href="index.html?mg=6&ca=0&alk=12">Use this recipe &rarr;</a>
+  <p class="desc" style="margin-top: 10px;">A close approximation of Melbourne, Australia tap water. Very soft and low in minerals — suited to long filter brews or cuppings stretched over 5–10 minutes, and to darker espresso roasts that don't need much help extracting.</p>
+  <div class="targets">
+    <div class="target"><p class="label">Magnesium</p><p class="value">6 mg/L</p></div>
+    <div class="target"><p class="label">Calcium</p><p class="value">0 mg/L</p></div>
+    <div class="target"><p class="label">Alkalinity</p><p class="value">12 mg/L</p></div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <h2>WOC Budapest</h2>
+  <a class="use-btn" href="index.html?mg=12&ca=0&alk=40">Use this recipe &rarr;</a>
+  <p class="desc" style="margin-top: 10px;">Target range used for the World Brewers Cup in Budapest (51 mg/L total hardness, 40 mg/L alkalinity, as CaCO3). Note the competition's actual water got hardness from both calcium and magnesium — this version is magnesium-only, so expect a different flavor outcome.</p>
+  <div class="targets">
+    <div class="target"><p class="label">Magnesium</p><p class="value">12 mg/L</p></div>
+    <div class="target"><p class="label">Calcium</p><p class="value">0 mg/L</p></div>
+    <div class="target"><p class="label">Alkalinity</p><p class="value">40 mg/L</p></div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <h2>SCA</h2>
+  <a class="use-btn" href="index.html?mg=17&ca=0&alk=40">Use this recipe &rarr;</a>
+  <p class="desc" style="margin-top: 10px;">The official Specialty Coffee Association water specification (SCAA 2009 handbook). A balanced, middle-of-the-road profile that works reasonably well across most roast levels as a starting point.</p>
+  <div class="targets">
+    <div class="target"><p class="label">Magnesium</p><p class="value">17 mg/L</p></div>
+    <div class="target"><p class="label">Calcium</p><p class="value">0 mg/L</p></div>
+    <div class="target"><p class="label">Alkalinity</p><p class="value">40 mg/L</p></div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <h2>Barista Hustle</h2>
+  <a class="use-btn" href="index.html?mg=20&ca=0&alk=40">Use this recipe &rarr;</a>
+  <p class="desc" style="margin-top: 10px;">Barista Hustle's original house water recipe — a bit more hardness than the SCA spec while keeping the same alkalinity. Described as a solid, balanced starting point for most coffees.</p>
+  <div class="targets">
+    <div class="target"><p class="label">Magnesium</p><p class="value">20 mg/L</p></div>
+    <div class="target"><p class="label">Calcium</p><p class="value">0 mg/L</p></div>
+    <div class="target"><p class="label">Alkalinity</p><p class="value">40 mg/L</p></div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <h2>Rao</h2>
+  <a class="use-btn" href="index.html?mg=18&ca=0&alk=50">Use this recipe &rarr;</a>
+  <p class="desc" style="margin-top: 10px;">Close to Scott Rao's recommended water chemistry for balanced, flavorful coffee. Slightly higher in both hardness and alkalinity than the SCA spec.</p>
+  <div class="targets">
+    <div class="target"><p class="label">Magnesium</p><p class="value">18 mg/L</p></div>
+    <div class="target"><p class="label">Calcium</p><p class="value">0 mg/L</p></div>
+    <div class="target"><p class="label">Alkalinity</p><p class="value">50 mg/L</p></div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <h2>Hendon</h2>
+  <a class="use-btn" href="index.html?mg=24&ca=0&alk=31">Use this recipe &rarr;</a>
+  <p class="desc" style="margin-top: 10px;">Close to the center of Christopher Hendon and Maxwell Colonna-Dashwood's "Ideal Brew Zone" from their water research. A good starting point if you want to dial in water for a particular roast.</p>
+  <div class="targets">
+    <div class="target"><p class="label">Magnesium</p><p class="value">24 mg/L</p></div>
+    <div class="target"><p class="label">Calcium</p><p class="value">0 mg/L</p></div>
+    <div class="target"><p class="label">Alkalinity</p><p class="value">31 mg/L</p></div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <h2>Pretty Hard</h2>
+  <a class="use-btn" href="index.html?mg=31&ca=0&alk=35">Use this recipe &rarr;</a>
+  <p class="desc" style="margin-top: 10px;">Starts climbing into higher mineral territory — probably better suited to shorter filter brew times. Pulls a lot out of the coffee, so grind and brew ratio will likely need adjusting to compensate.</p>
+  <div class="targets">
+    <div class="target"><p class="label">Magnesium</p><p class="value">31 mg/L</p></div>
+    <div class="target"><p class="label">Calcium</p><p class="value">0 mg/L</p></div>
+    <div class="target"><p class="label">Alkalinity</p><p class="value">35 mg/L</p></div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <h2>Hard dot AF</h2>
+  <a class="use-btn" href="index.html?mg=43&ca=0&alk=45">Use this recipe &rarr;</a>
+  <p class="desc" style="margin-top: 10px;">The high end — mineral levels cranked way up. Brew parameters from the gentler recipes above will need significant adjustment to work with water this aggressive.</p>
+  <div class="targets">
+    <div class="target"><p class="label">Magnesium</p><p class="value">43 mg/L</p></div>
+    <div class="target"><p class="label">Calcium</p><p class="value">0 mg/L</p></div>
+    <div class="target"><p class="label">Alkalinity</p><p class="value">45 mg/L</p></div>
+  </div>
+</div>
+
+<hr>
+
+<div class="note">
+  These are adapted from Barista Hustle's published DIY water recipes (<a href="https://www.baristahustle.com/diy-water-recipes-redux/" target="_blank" rel="noopener">baristahustle.com/diy-water-recipes-redux</a>). Their recipes use zero calcium — all hardness comes from magnesium sulfate (Epsom salt) alone, paired with sodium bicarbonate for alkalinity. Magnesium targets here are converted from their calcium-carbonate-equivalent hardness figures to elemental magnesium (divided by 4.115) to match this calculator's units. Set your alkalinity source to baking soda to match the original recipes.
+</div>
+
+</body>
+</html>
