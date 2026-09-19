@@ -130,8 +130,12 @@
 <hr>
 
 <h2 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Roast level</h2>
-<p style="font-size: 12px; color: #666; margin-top: 0; margin-bottom: 10px;">Drag to jump to a recommended recipe, or watch it track where your current sliders fall.</p>
-<input type="range" id="roast" min="0" max="3" step="0.01" value="1" style="width: 100%;" />
+<p style="font-size: 12px; color: #666; margin-top: 0; margin-bottom: 10px;">Drag to jump to a recommended recipe, or watch it track where your current sliders fall. Number scale (1&ndash;100) lets you note and replicate an exact position later.</p>
+<div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
+  <label style="font-size: 13px;">Position</label>
+  <span id="roast-out" style="font-weight: 600; font-size: 14px;">34</span>
+</div>
+<input type="range" id="roast" min="1" max="100" step="1" value="34" style="width: 100%;" />
 <div style="display: flex; justify-content: space-between; font-size: 11px; color: #888; margin-top: 4px; margin-bottom: 20px;">
   <span>Light</span>
   <span>Medium</span>
@@ -230,6 +234,14 @@ const ROAST_PRESETS = [
 ];
 let suppressRoastSync = false;
 
+// Map the 1-100 display scale onto the 0-3 preset-index space (1=>0, 100=>3)
+function displayToPos(display) {
+  return (display - 1) / 33;
+}
+function posToDisplay(pos) {
+  return Math.round(pos * 33 + 1);
+}
+
 function applyRoastPreset(index) {
   const p = ROAST_PRESETS[index];
   suppressRoastSync = true;
@@ -252,22 +264,41 @@ function interpolateRoast(pos) {
   };
 }
 
+// Find the closest point along the Light->Medium->Dark->Extra-dark path to the current mg/ca/alk values,
+// so manual slider adjustments produce a continuous position, not a snap to the nearest whole preset.
+function closestPosOnPath(mg, ca, alk) {
+  let bestPos = 0, bestDist = Infinity;
+  for (let i = 0; i < ROAST_PRESETS.length - 1; i++) {
+    const a = ROAST_PRESETS[i], b = ROAST_PRESETS[i + 1];
+    const ax = a.mg / 60, ay = a.ca / 60, az = a.alk / 100;
+    const bx = b.mg / 60, by = b.ca / 60, bz = b.alk / 100;
+    const px = mg / 60, py = ca / 60, pz = alk / 100;
+    const dx = bx - ax, dy = by - ay, dz = bz - az;
+    const len2 = dx * dx + dy * dy + dz * dz;
+    let t = len2 > 0 ? ((px - ax) * dx + (py - ay) * dy + (pz - az) * dz) / len2 : 0;
+    t = Math.max(0, Math.min(1, t));
+    const cx = ax + dx * t, cy = ay + dy * t, cz = az + dz * t;
+    const dist = Math.pow(px - cx, 2) + Math.pow(py - cy, 2) + Math.pow(pz - cz, 2);
+    if (dist < bestDist) { bestDist = dist; bestPos = i + t; }
+  }
+  return bestPos;
+}
+
 function syncRoastSliderFromTargets() {
   if (suppressRoastSync) return;
   const mg = parseFloat($('mg').value);
   const ca = parseFloat($('ca').value);
   const alk = parseFloat($('alk').value);
-  let bestIdx = 0, bestDist = Infinity;
-  ROAST_PRESETS.forEach((p, i) => {
-    const d = Math.pow((mg - p.mg) / 60, 2) + Math.pow((ca - p.ca) / 60, 2) + Math.pow((alk - p.alk) / 100, 2);
-    if (d < bestDist) { bestDist = d; bestIdx = i; }
-  });
-  $('roast').value = bestIdx;
+  const pos = closestPosOnPath(mg, ca, alk);
+  $('roast').value = posToDisplay(pos);
+  $('roast-out').textContent = $('roast').value;
 }
 
 // While dragging: smooth interpolation between adjacent presets, no snapping
 $('roast').addEventListener('input', () => {
-  const pos = parseFloat($('roast').value);
+  const display = parseFloat($('roast').value);
+  $('roast-out').textContent = display;
+  const pos = displayToPos(display);
   const vals = interpolateRoast(pos);
   suppressRoastSync = true;
   $('mg').value = Math.round(vals.mg);
@@ -305,7 +336,8 @@ VOL_IDS.forEach(id => {
 const savedRoast = localStorage.getItem('coffeewater_roast');
 if (savedRoast !== null) {
   $('roast').value = savedRoast;
-  const vals = interpolateRoast(parseFloat(savedRoast));
+  $('roast-out').textContent = savedRoast;
+  const vals = interpolateRoast(displayToPos(parseFloat(savedRoast)));
   $('mg').value = Math.round(vals.mg);
   $('ca').value = Math.round(vals.ca);
   $('alk').value = Math.round(vals.alk);
