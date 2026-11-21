@@ -35,6 +35,7 @@
   .card p.value { font-size: 20px; font-weight: 600; margin: 0; }
   .note { font-size: 12px; color: #888; margin-top: 20px; line-height: 1.5; }
   hr { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+  html, body { overflow-anchor: none; }
 </style>
 </head>
 <body>
@@ -131,11 +132,10 @@
 
 <h2 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Roast level</h2>
 <p style="font-size: 12px; color: #666; margin-top: 0; margin-bottom: 10px;">Drag to jump to a recommended recipe, or watch it track where your current sliders fall. Number scale (1&ndash;100) lets you note and replicate an exact position later.</p>
-<div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
-  <label style="font-size: 13px;">Position</label>
-  <span id="roast-out" style="font-weight: 600; font-size: 14px;">34</span>
+<div style="display: flex; align-items: center; gap: 12px;">
+  <input type="range" id="roast" min="1" max="100" step="1" value="34" style="flex: 1; min-width: 0;" />
+  <input type="number" id="roast-num" min="1" max="100" step="1" value="34" inputmode="numeric" aria-label="Roast position (1-100)" style="width: 64px; font-size: 16px; padding: 4px 6px; text-align: center;" />
 </div>
-<input type="range" id="roast" min="1" max="100" step="1" value="34" style="width: 100%;" />
 <div style="display: flex; justify-content: space-between; font-size: 11px; color: #888; margin-top: 4px; margin-bottom: 20px;">
   <span>Light</span>
   <span>Medium</span>
@@ -291,13 +291,15 @@ function syncRoastSliderFromTargets() {
   const alk = parseFloat($('alk').value);
   const pos = closestPosOnPath(mg, ca, alk);
   $('roast').value = posToDisplay(pos);
-  $('roast-out').textContent = $('roast').value;
+  $('roast-num').value = $('roast').value;
 }
 
 // While dragging: smooth interpolation between adjacent presets, no snapping
 $('roast').addEventListener('input', () => {
   const display = parseFloat($('roast').value);
-  $('roast-out').textContent = display;
+  // Keep the page from scrolling/shifting while dragging
+  const keepY = window.scrollY, keepX = window.scrollX;
+  $('roast-num').value = display;
   const pos = displayToPos(display);
   const vals = interpolateRoast(pos);
   suppressRoastSync = true;
@@ -306,7 +308,29 @@ $('roast').addEventListener('input', () => {
   $('alk').value = Math.round(vals.alk);
   update();
   suppressRoastSync = false;
+  if (window.scrollY !== keepY || window.scrollX !== keepX) window.scrollTo(keepX, keepY);
+  if (document.activeElement !== $('roast') && document.activeElement !== $('roast-num')) {
+    $('roast').focus({ preventScroll: true });
+  }
 });
+
+// Number box: type a value (1-100) to move the roast slider
+function applyRoastNumber(final) {
+  const raw = $('roast-num').value;
+  if (raw === '') { if (final) $('roast-num').value = $('roast').value; return; }
+  let n = Math.round(parseFloat(raw));
+  if (isNaN(n)) { if (final) $('roast-num').value = $('roast').value; return; }
+  if (n < 1 || n > 100) {
+    if (!final) return;           // let them keep typing; clamp on blur/Enter
+    n = Math.min(100, Math.max(1, n));
+  }
+  if (final) $('roast-num').value = n;
+  $('roast').value = n;
+  $('roast').dispatchEvent(new Event('input', { bubbles: true }));
+}
+$('roast-num').addEventListener('input', () => applyRoastNumber(false));
+$('roast-num').addEventListener('change', () => applyRoastNumber(true));
+$('roast-num').addEventListener('keydown', e => { if (e.key === 'Enter') { applyRoastNumber(true); $('roast-num').blur(); } });
 
 ['mg','ca','alk'].forEach(id => {
   $(id).addEventListener('input', syncRoastSliderFromTargets);
@@ -336,7 +360,7 @@ VOL_IDS.forEach(id => {
 const savedRoast = localStorage.getItem('coffeewater_roast');
 if (savedRoast !== null) {
   $('roast').value = savedRoast;
-  $('roast-out').textContent = savedRoast;
+  $('roast-num').value = savedRoast;
   const vals = interpolateRoast(displayToPos(parseFloat(savedRoast)));
   $('mg').value = Math.round(vals.mg);
   $('ca').value = Math.round(vals.ca);
