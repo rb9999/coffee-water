@@ -132,15 +132,16 @@
 
 <h2 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Roast level</h2>
 <p style="font-size: 12px; color: #666; margin-top: 0; margin-bottom: 10px;">Drag to jump to a recommended recipe, or watch it track where your current sliders fall. Number scale (1&ndash;100) lets you note and replicate an exact position later.</p>
-<div style="display: flex; align-items: center; gap: 12px;">
-  <input type="range" id="roast" min="1" max="100" step="1" value="34" style="flex: 1; min-width: 0;" />
-  <input type="number" id="roast-num" min="1" max="100" step="1" value="34" inputmode="numeric" aria-label="Roast position (1-100)" style="width: 64px; font-size: 16px; padding: 4px 6px; text-align: center;" />
-</div>
-<div style="display: flex; justify-content: space-between; font-size: 11px; color: #888; margin-top: 4px; margin-bottom: 20px;">
+<input type="range" id="roast" min="1" max="100" step="1" value="34" style="width: 100%;" />
+<div style="display: flex; justify-content: space-between; font-size: 11px; color: #888; margin-top: 4px; margin-bottom: 10px;">
   <span>Light</span>
   <span>Medium</span>
   <span>Dark</span>
   <span>Extra dark</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 20px;">
+  <label for="roast-num" style="font-size: 13px;">Position (1&ndash;100)</label>
+  <input type="number" id="roast-num" min="1" max="100" step="1" value="34" inputmode="numeric" style="flex: none; width: 4.5em; font-size: 16px; padding: 4px 6px; text-align: center;" />
 </div>
 
 <hr>
